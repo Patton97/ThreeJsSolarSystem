@@ -1,64 +1,38 @@
-import { OrbitControls } from "./OrbitControls.js";
-import Star from "./space/star.js";
+import Sol from "./space/sol.js";
 import Mars from "./space/planets/mars.js";
 import Earth from "./space/planets/earth.js";
 import { SkyBox, SkySphere } from "./skybox.js";
+import RootedOrbitCamera from "./RootedOrbitCamera.js";
+import SceneManager from "./SceneManager.js";
+import { OrbitControls } from "./OrbitControls.js";
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000000000 );
-camera.position.set(-50, 0, 0);
-
-const renderer = new THREE.WebGLRenderer();
+let renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-const ANIM_SPEED = 0.0001;
+let camera = new RootedOrbitCamera(renderer.domElement, 75, window.innerWidth / window.innerHeight, 0.1, 1000000000 );
 
-var sun = new Star("Sun", 0xffff00, scene, 20);
-var earth = new Earth(sun);
-var mars = new Mars(scene);
-
-let cameraRoot = new THREE.Mesh();
-cameraRoot.add(camera);
-mars.dormantRoot.add(cameraRoot);
-
-const controls = new OrbitControls( camera, renderer.domElement );
+let controls = new OrbitControls( camera, renderer.domElement );
 controls.enablePan = false;
-controls.update();
 
-const skySphere = new SkySphere(scene, "assets/skybox/skybox.png");
-let cameraRootIndex = 0;
-let onDocumentKeyDown = (event) => 
-{
-  // this is dumb but it works for now
-  if (event.which == 32) // space
-  {
-    if (cameraRootIndex == 0) // earth
-    {
-      mars.dormantRoot.add(cameraRoot);
-      cameraRootIndex = 1; // mars
-    }
-    else // mars
-    {
-      earth.dormantRoot.add(cameraRoot);
-      cameraRootIndex = 0; // earth
-    }
-  }
-}
+const sceneManager = new SceneManager(camera, 0.0001);
 
-document.addEventListener("keydown", onDocumentKeyDown, false);
+let sol = new Sol(sceneManager.scene);
+let earth = new Earth(sol);
+let mars = new Mars(sol);
+let skySphere = new SkySphere(sceneManager.scene, "assets/skybox/skybox.png");
+
+sceneManager.addObjects([sol, earth, mars]);
+
+sceneManager.camera.setCameraRoot(mars.dormantRoot);
+sceneManager.camera.position.set(-50, 0, 0);
 
 function animate() 
 {
   requestAnimationFrame( animate );
+  sceneManager.animate();
+  renderer.render( sceneManager.scene, sceneManager.camera );
 
-  sun.animate(ANIM_SPEED);
-  earth.animate(ANIM_SPEED);
-  mars.animate(ANIM_SPEED);
-
-  camera.lookAt(cameraRoot.getWorldPosition(new THREE.Vector3));
-
-  renderer.render( scene, camera );
   controls.update();
 }
 animate();

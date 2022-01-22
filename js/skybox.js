@@ -38,7 +38,7 @@ class SkySphere extends THREE.Mesh
   constructor(scene, texturePath)
   {
     let geometry = new THREE.SphereGeometry(1000, 25, 25);
-    let material = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load(texturePath), side: THREE.BackSide })
+    let material = CREATE_MATERIAL(texturePath);
 
     super(geometry, material);
     scene.add(this);
