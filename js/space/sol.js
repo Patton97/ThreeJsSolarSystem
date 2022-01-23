@@ -27,7 +27,7 @@ class Sol extends Star
   static makeMaterial()
   {
     let colour = MATERIAL_COLOUR_HEX;
-    let material = new THREE.MeshStandardMaterial({ color: colour });
+    let material = new THREE.MeshPhongMaterial({ color: colour });
     material.emissive.setHex(colour);
     return material;
   }

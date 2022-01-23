@@ -6,7 +6,7 @@ class OrbitalObject extends SceneObject
   {
     // the orbital object should always be parented by a spinning root
     // the spinning root is parented by a dormant root
-    // the dormat root is parented by an orbit root
+    // the dormant root is parented by an orbit root
     // the orbit root is parented by whatever the calling code passed in
     // this enables other objects to be attached to an orbital object, 
     // without necessarily abiding by its spin speed

@@ -29,7 +29,7 @@ class MARS extends OrbitalObject
 
   static makeGeometry()
   {
-    return new THREE.SphereGeometry(EQ_RADIUS, 20, 20, 20);
+    return new THREE.SphereGeometry(EQ_RADIUS, 1000, 1000);
   }
 
   static makeMaterial()
@@ -37,6 +37,8 @@ class MARS extends OrbitalObject
     let mat = new THREE.MeshPhongMaterial();
     
     FolderBasedMaterialLoader.loadMaterialFromFolder(mat, "./assets/planets/mars");
+
+    mat.displacementScale = 0.25;
 
     return mat;
   }
